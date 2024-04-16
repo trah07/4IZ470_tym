@@ -64,14 +64,15 @@ for url in urls:
                 "lemmatum": lemmatizer.lemmatize(token.text)
             })
 
-# Výpis charakteristik tokenů
-for token_info in token_characteristics:
-    print("Token:", token_info["text"])
-    print("\tTyp:", token_info["typ"])
-    print("\tKapitalizace:", token_info["kapitalizace"])
-    print("\tDélka:", token_info["délka"])
-    print("\tDoslovné řetězce:", token_info["doslovné_řetězce"])
-    print("\tPOS značka:", token_info["POS_značka"])
-    print("\tStem:", token_info["stem"])
-    print("\tLemmatum:", token_info["lemmatum"])
-    print()
+# Výpis charakteristik tokenů do 'output.txt'
+with open("output.txt", "w", encoding="utf-8") as file:
+    for token_info in token_characteristics:
+        file.write("Token: {}\n".format(token_info["text"]))
+        file.write("\tTyp: {}\n".format(token_info["typ"]))
+        file.write("\tKapitalizace: {}\n".format(token_info["kapitalizace"]))
+        file.write("\tDélka: {}\n".format(token_info["délka"]))
+        file.write("\tDoslovné řetězce: {}\n".format(token_info["doslovné_řetězce"]))
+        file.write("\tPOS značka: {}\n".format(token_info["POS_značka"]))
+        file.write("\tStem: {}\n".format(token_info["stem"]))
+        file.write("\tLemmatum: {}\n".format(token_info["lemmatum"]))
+        file.write("\n")

@@ -68,7 +68,7 @@ for file_name, text_content in zip(file_names, text_contents):
     print("\n")
     file_name = os.path.splitext(file_name)[0]
     salaries, salary_tokens, sentences, pos_tags, stems, lemmas = find_salary(text_content)
-    print(f"Salaries in {file_name}: {salaries}")
+    print(f"Salaries regex in {file_name}: {salaries}")
     print(f"Salary tokens in {file_name}: {salary_tokens}")
     print(f"Sentences in {file_name}: {sentences}")
     print(f"POS tags in {file_name}: {pos_tags}")

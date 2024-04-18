@@ -15,31 +15,31 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
 
-def find_job_description(text):
-    job_desc_patterns = [
-        r'\b(?:role|job\s*description|responsibilities|duties)\b(.+?)(?=\b(?:role|job\s*description|responsibilities|duties|$))'
+def find_education_requirement(text):
+    education_patterns = [
+        r'\b(?:education|qualification|degree)\b(.+?)(?=\b(?:role|job\s*description|responsibilities|duties|$))'
     ]
 
-    job_descriptions = []
+    education_requirements = []
 
-    for pattern in job_desc_patterns:
+    for pattern in education_patterns:
         matches = re.findall(pattern, text, flags=re.IGNORECASE | re.DOTALL)
-        job_descriptions.extend(matches)
+        education_requirements.extend(matches)
 
-    if not job_descriptions:
-        return [], [], [], [], [], []  # Return empty lists if no job descriptions found
+    if not education_requirements:
+        return [], [], [], [], [], []  # Return empty lists if no education requirements found
 
-    # Extract job description text from matches
-    job_description_text = ' '.join(job_descriptions)
+    # Extract education requirement text from matches
+    education_requirement_text = ' '.join(education_requirements)
 
     tokenizer = RegexpTokenizer(r'\b\w+\b')  # Tokenizer for whole words
 
-    tokens = tokenizer.tokenize(job_description_text)
-    job_desc_tokens = [token for token in tokens if token.lower() in ['job', 'description']]
+    tokens = tokenizer.tokenize(education_requirement_text)
+    education_tokens = [token for token in tokens if token.lower() in ['education', 'qualification', 'degree']]
 
     # SpaCy for POS tagging and lemmatization
     nlp = spacy.load("en_core_web_sm")
-    doc = nlp(job_description_text)
+    doc = nlp(education_requirement_text)
     sentence_tokens = [sent.text for sent in doc.sents]
     pos_tags = [(token.text, token.pos_) for token in doc]
 
@@ -49,7 +49,7 @@ def find_job_description(text):
     stems = [porter.stem(token) for token in tokens]
     lemmas = [lemmatizer.lemmatize(token) for token in tokens]
 
-    return job_descriptions, job_desc_tokens, sentence_tokens, pos_tags, stems, lemmas
+    return education_requirements, education_tokens, sentence_tokens, pos_tags, stems, lemmas
 
 folder_path = "./train/"
 text_contents = []
@@ -66,11 +66,10 @@ file_names = os.listdir(folder_path)
 for file_name, text_content in zip(file_names, text_contents):
     print("\n")
     file_name = os.path.splitext(file_name)[0]
-    job_descs, job_desc_tokens, sentences, pos_tags, stems, lemmas = find_job_description(text_content)
-    print(f"Job descriptions regex in {file_name}: {job_descs}")
-    print(f"Job description tokens in {file_name}: {job_desc_tokens}")
-    print(f"Sentences in {file_name}: {sentences}")
+    education_reqs, education_tokens, sentences, pos_tags, stems, lemmas = find_education_requirement(text_content)
+    print(f"Educational requirements regex in {file_name}: {education_reqs}")
+    print(f"Educational requirement tokens in {file_name}: {education_tokens}")
+    # print(f"Sentences in {file_name}: {sentences}")
     # print(f"POS tags in {file_name}: {pos_tags}")
     # print(f"Stems in {file_name}: {stems}")
     # print(f"Lemmas in {file_name}: {lemmas}")
-

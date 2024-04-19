@@ -1,59 +1,32 @@
-import os
-import re
-from nltk.tokenize import word_tokenize
 import nltk
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
+from nltk.chunk import RegexpParser
+from nltk.tokenize import word_tokenize
 
-## Function to extract highest education requirement
-def extract_education_requirement(text):
-    # Define patterns to identify education-related sections
-    education_patterns = [
-        r"(?i)\b(?:education|educational qualifications|educational requirement|required education)\b",
-        r"(?i)\b(?:master(?:'s)? degree|master(?:'s)? equivalent|bachelor(?:'s)? degree|phd|doctorate|mba|master of business administration|bs|ba)\b"
-    ]
-
-    # Find start and end of education-related sections
-    start_index = None
-    end_index = None
-
-    for pattern in education_patterns:
-        matches = re.finditer(pattern, text)
-        for match in matches:
-            if start_index is None or match.start() < start_index:
-                start_index = match.start()
-            if end_index is None or match.end() > end_index:
-                end_index = match.end()
-
-    if start_index is not None and end_index is not None:
-        education_text = text[start_index:end_index]
+def extract_education_level(text):
+    grammar = r"""
+        EDUCATION: {<JJ|NN.*><POS>*<NN.*>}
+        """
+    
+    chunk_parser = RegexpParser(grammar)
+    
+    tokens = word_tokenize(text)
+    tagged_tokens = nltk.pos_tag(tokens)
+    
+    chunked_tokens = chunk_parser.parse(tagged_tokens)
+    
+    education_levels = set()
+    for subtree in chunked_tokens.subtrees():
+        if subtree.label() == 'EDUCATION':
+            education_level = ' '.join(token[0] for token in subtree.leaves())
+            if 'degree' in education_level.lower() or 'diploma' in education_level.lower():
+                education_levels.add(education_level)
+    
+    if education_levels:
+        return list(education_levels)
     else:
-        return "Education requirement not found."
+        return "Education requirement not mentioned"
 
-    # Tokenize the education section
-    tokens = word_tokenize(education_text)
-
-    # Find the highest degree mentioned in the education section
-    bachelor_degree = re.search(r"(?i)\b(?:bachelor(?:'s)? degree|bs|ba)\b", education_text)
-    master_degree = re.search(r"(?i)\b(?:master(?:'s)? degree|phd|doctorate|mba|master of business administration)\b", education_text)
-
-    if master_degree and bachelor_degree:
-        if master_degree.start() > bachelor_degree.start():
-            highest_degree = "Master's degree"
-        else:
-            highest_degree = "Bachelor's degree"
-    elif master_degree:
-        highest_degree = "Master's degree"
-    elif bachelor_degree:
-        highest_degree = "Bachelor's degree"
-    else:
-        highest_degree = "No specific degree mentioned"
-
-    return highest_degree
-
-folder_path = "./test"
+folder_path = "inzeraty/train"
 text_contents = []
 
 for filename in os.listdir(folder_path):
@@ -65,8 +38,7 @@ for filename in os.listdir(folder_path):
 
 file_names = os.listdir(folder_path)
 
-# Extract education requirement from texts
 for file_name, text_content in zip(file_names, text_contents):
     file_name = os.path.splitext(file_name)[0]
-    education_requirement = extract_education_requirement(text_content)
+    education_requirement = extract_education_level(text_content)
     print(f"\nHighest education requirement in {file_name}:\n• {education_requirement}")

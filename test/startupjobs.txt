@@ -1,0 +1,48 @@
+Product Owner (with fluent Czech/Slovak)
+
+Hybrid
+Praha + 8 next
+Full-time
+
+We are young and dynamic company providing to our customers services in all aspects of HR management. Apart from business consulting and process design, we focus on implementation of SuccessFactors – modern HR cloud solution and development of own applications to cover needs of our customers. We have already delivered many projects of various size for customers in the Czech Republic as well as abroad. We have already 10 own applications extending the functionality of SuccessFactors. As demand for our services grows, so does our company. Therefore, we are looking for a new colleague into our R&D team for the position of Product Owner.
+
+Responsibilities and Duties
+
+After the initial training, you will be responsible for:
+
+Testing and evaluating of our current applications in HR area for shift planning, travel management, etaxes,…,
+Active support of the application’s releases throughout the year,
+Analysis of bugs and communication with internal/external developers and partners about the solution,
+Analysis of possible improvements in our applications in cooperation with product manager,
+Owner of admin documentation of our applications• Application implementation support for consultants,
+Gaining certification in some SuccessFactors modules to be able to understand connection between Success Factors and our applications,
+Together with other colleagues you will be continuously inventing new technical and process solutions for our customers.
+Long term, you will be responsible for:
+
+Researching, designing, new SAP UI5 / Fiori applications (End-to End including backend) for our Czech and also international clients,
+Identifying areas for improvements in our existing applications for shift planning, travel management,
+Application deployment for new customers,
+Business application design (blueprint) preparation for developers,
+Analysis of requested improvements from our clients and evaluation of impact to current solutions,
+Working closely with RnD manager on new applications design.
+Qualifications
+
+Some experience in design, implementation and support of web applications using the SAP UI5 Framework,
+Odata, Rest API,
+Basic orientation in HR processes,
+Fluent knowledge of Czech (or Slovak) and English language,
+Stress resistance during intensive project phases and positive approach to a busy workload,
+Valid work permit to work in Czech Republic.
+Advantages:
+
+Experience with implementation of systems,
+Experience with SuccessFactors,
+Deeper knowledge of any specific HR area,
+Knowledge of Human Capital Management (SAP HCM & Success Factors) terminology.
+What you can expect
+
+We offer a flexible schedule (work from home or from the office located in Dejvice, Praha 6), friendly company culture, growth opportunities. We emphasize work-life balance, organize regular in-person meetings and many sports and recreational activities. We also offer some amazing benefits, such as additional vacation days, contribution to pension scheme, meal allowance, Pluxee points and other.
+
+Location:
+
+Prague, or any other location within Czech Republic.

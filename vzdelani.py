@@ -1,57 +1,47 @@
-import requests
 import os
 import re
-from bs4 import BeautifulSoup
-import spacy
-import glob
-from nltk.tokenize import sent_tokenize, word_tokenize, RegexpTokenizer
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk.corpus import stopwords
+from nltk.tag import pos_tag
 import nltk
-
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
 
-def find_education_requirement(text):
+## Function to extract highest education requirement
+def extract_education_requirement(text):
+    # Define patterns to identify education-related sections
     education_patterns = [
-        r'\b(?:education|qualification|degree)\b(.+?)(?=\b(?:role|job\s*description|responsibilities|duties|$))'
+        r"(?i)\b(?:education|educational qualifications|educational requirement|required education)\b",
+        r"(?i)\b(?:master(?:'s)? degree|master(?:'s)? equivalent|bachelor(?:'s)? degree|phd|doctorate|mba|master of business administration|bs|ba)\b"
     ]
 
-    education_requirements = []
+    # Find start and end of education-related sections
+    start_index = None
+    end_index = None
 
     for pattern in education_patterns:
-        matches = re.findall(pattern, text, flags=re.IGNORECASE | re.DOTALL)
-        education_requirements.extend(matches)
+        matches = re.finditer(pattern, text)
+        for match in matches:
+            if start_index is None or match.start() < start_index:
+                start_index = match.start()
+            if end_index is None or match.end() > end_index:
+                end_index = match.end()
 
-    if not education_requirements:
-        return [], [], [], [], [], []  # Return empty lists if no education requirements found
+    if start_index is not None and end_index is not None:
+        education_text = text[start_index:end_index]
+    else:
+        return "Education requirement not found."
 
-    # Extract education requirement text from matches
-    education_requirement_text = ' '.join(education_requirements)
+    # Find the highest degree mentioned in the education section
+    degrees = re.findall(r"(?i)\b(?:master(?:'s)? degree|bachelor(?:'s)? degree|phd|doctorate|mba|master of business administration|bs|ba)\b", education_text)
+    highest_degree = max(degrees, key=len) if degrees else "No specific degree mentioned"
 
-    tokenizer = RegexpTokenizer(r'\b\w+\b')  # Tokenizer for whole words
+    return highest_degree
 
-    tokens = tokenizer.tokenize(education_requirement_text)
-    education_tokens = [token for token in tokens if token.lower() in ['education', 'qualification', 'degree']]
-
-    # SpaCy for POS tagging and lemmatization
-    nlp = spacy.load("en_core_web_sm")
-    doc = nlp(education_requirement_text)
-    sentence_tokens = [sent.text for sent in doc.sents]
-    pos_tags = [(token.text, token.pos_) for token in doc]
-
-    # NLTK for stemming and lemmatization
-    porter = PorterStemmer()
-    lemmatizer = WordNetLemmatizer()
-    stems = [porter.stem(token) for token in tokens]
-    lemmas = [lemmatizer.lemmatize(token) for token in tokens]
-
-    return education_requirements, education_tokens, sentence_tokens, pos_tags, stems, lemmas
-
-folder_path = "./train/"
+folder_path = "./train"
 text_contents = []
 
 for filename in os.listdir(folder_path):
@@ -63,13 +53,8 @@ for filename in os.listdir(folder_path):
 
 file_names = os.listdir(folder_path)
 
+# Extract education requirement from texts
 for file_name, text_content in zip(file_names, text_contents):
-    print("\n")
     file_name = os.path.splitext(file_name)[0]
-    education_reqs, education_tokens, sentences, pos_tags, stems, lemmas = find_education_requirement(text_content)
-    print(f"Educational requirements regex in {file_name}: {education_reqs}")
-    print(f"Educational requirement tokens in {file_name}: {education_tokens}")
-    # print(f"Sentences in {file_name}: {sentences}")
-    # print(f"POS tags in {file_name}: {pos_tags}")
-    # print(f"Stems in {file_name}: {stems}")
-    # print(f"Lemmas in {file_name}: {lemmas}")
+    education_requirement = extract_education_requirement(text_content)
+    print(f"\nHighest education requirement in {file_name}:\n• {education_requirement}")

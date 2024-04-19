@@ -10,45 +10,40 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
 
-## Funkce pro získání popisu pracovní pozice
 def get_job_description(text):
-    # Define patterns to identify start and end of job description
     start_pattern = r"(?i)\b(?:about the job|responsibilities|job duties|job responsibilities)\b"
     end_pattern = r"(?i)\b(?:qualifications|requirements|what you will bring|more about this role)\b"
 
-    # Find start of job description
     start_match = re.search(start_pattern, text)
     if start_match:
         start_index = start_match.start()
     else:
         start_index = 0
     
-    # Find end of job description
     end_match = re.search(end_pattern, text[start_index:])
     if end_match:
         end_index = end_match.start() + start_index
     else:
         end_index = len(text)
     
-    # Extract job description text
     job_description = text[start_index:end_index].strip()
 
-    # Perform tokenization, filtering, and stemming/lemmatization
     sentences = sent_tokenize(job_description)
+    # Token pro kapitalizaci
     stop_words = set(stopwords.words('english'))
     lemmatizer = WordNetLemmatizer()
     stemmer = PorterStemmer()
     filtered_sentences = []
 
     for sentence in sentences:
-        # Exclude sentences that may not directly relate to responsibilities
         if any(word in sentence.lower() for word in ["qualification", "requirement", "what you will bring", "more about this role"]):
             continue
 
         words = word_tokenize(sentence)
         filtered_words = []
         for word, pos in pos_tag(words):
-            if word.lower() not in stop_words:
+            # Token délky
+            if word.lower() not in stop_words and len(word) > 3:
                 word = re.sub(r'[^\w-]', '', word)
                 if word:
                     if pos.startswith('V'):
@@ -60,7 +55,6 @@ def get_job_description(text):
         if filtered_sentence:
             filtered_sentences.append(filtered_sentence)
 
-    # Combine filtered sentences into bullet points
     bullet_points = '\n• '.join(filtered_sentences)
 
     return bullet_points
@@ -77,7 +71,6 @@ for filename in os.listdir(folder_path):
 
 file_names = os.listdir(folder_path)
 
-# Extrakce popisu pozice z textů
 for file_name, text_content in zip(file_names, text_contents):
     file_name = os.path.splitext(file_name)[0]
     description = get_job_description(text_content)

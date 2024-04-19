@@ -1,12 +1,7 @@
-import requests
 import os
 import re
-from bs4 import BeautifulSoup
 import spacy
-import glob
-from nltk.tokenize import sent_tokenize, word_tokenize, RegexpTokenizer
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 import nltk
 nltk.download('punkt')

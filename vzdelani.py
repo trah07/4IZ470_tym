@@ -1,9 +1,6 @@
 import os
 import re
-from nltk.tokenize import sent_tokenize, word_tokenize
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-from nltk.corpus import stopwords
-from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -35,13 +32,28 @@ def extract_education_requirement(text):
     else:
         return "Education requirement not found."
 
+    # Tokenize the education section
+    tokens = word_tokenize(education_text)
+
     # Find the highest degree mentioned in the education section
-    degrees = re.findall(r"(?i)\b(?:master(?:'s)? degree|bachelor(?:'s)? degree|phd|doctorate|mba|master of business administration|bs|ba)\b", education_text)
-    highest_degree = max(degrees, key=len) if degrees else "No specific degree mentioned"
+    bachelor_degree = re.search(r"(?i)\b(?:bachelor(?:'s)? degree|bs|ba)\b", education_text)
+    master_degree = re.search(r"(?i)\b(?:master(?:'s)? degree|phd|doctorate|mba|master of business administration)\b", education_text)
+
+    if master_degree and bachelor_degree:
+        if master_degree.start() > bachelor_degree.start():
+            highest_degree = "Master's degree"
+        else:
+            highest_degree = "Bachelor's degree"
+    elif master_degree:
+        highest_degree = "Master's degree"
+    elif bachelor_degree:
+        highest_degree = "Bachelor's degree"
+    else:
+        highest_degree = "No specific degree mentioned"
 
     return highest_degree
 
-folder_path = "./train"
+folder_path = "./test"
 text_contents = []
 
 for filename in os.listdir(folder_path):
